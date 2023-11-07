@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "nosql.fullname" . }}
+  labels:
+    {{- include "nosql.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nosql.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nosql.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nosql.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nosql.fullname" . }}-secret
+                  key: rootUsername
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nosql.fullname" . }}-secret
+                  key: rootPassword
+            - name: MONGO_INITDB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nosql.fullname" . }}-secret
+                  key: username
+            - name: MONGO_INITDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nosql.fullname" . }}-secret
+                  key: password
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nosql.fullname" . }}-secret
+                  key: database
+          ports:
+            - name: nosql
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mongosh --eval \"db.adminCommand('ping')\""
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 6
+            successThreshold: 1
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mongosh --eval \"db.isMaster().ismaster || db.isMaster().secondary\" | grep 'true'"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+            - name: mongo-init
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: {{ include "nosql.fullname" . }}
+        - name: mongo-init
+          configMap:
+            name: {{ include "nosql.fullname" . }}
+            items:
+              - key: mongo-init.js
+                path: mongo-init.js
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
