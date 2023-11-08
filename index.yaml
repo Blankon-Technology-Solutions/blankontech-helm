@@ -9,6 +9,6 @@ entries:
     name: nosql
     type: application
     urls:
-    - https://blankon-technology-solutions.github.io/blankontech-helm/nosql-0.1.0.tgz
+    - https://blankon-technology-solutions.github.io/blankontech-helm/packages/nosql-0.1.0.tgz
     version: 0.1.0
 generated: "2023-11-07T23:18:09.575205+07:00"
