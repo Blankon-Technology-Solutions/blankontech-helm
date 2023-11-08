@@ -38,30 +38,21 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nosql.fullname" . }}-secret
-                  key: rootUsername
+              value: "root"
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nosql.fullname" . }}-secret
-                  key: rootPassword
+                  name: {{ .Values.auth.secretName . }}
+                  key: {{ .Values.auth.secretKey . }}
             - name: MONGO_INITDB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nosql.fullname" . }}-secret
-                  key: username
+              value: {{ .Values.auth.username . }}
             - name: MONGO_INITDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nosql.fullname" . }}-secret
-                  key: password
+                  name: {{ .Values.auth.secretName . }}
+                  key: {{ .Values.auth.secretKey . }}
             - name: MONGO_INITDB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nosql.fullname" . }}-secret
-                  key: database
+              value: {{ .Values.auth.database . }}
           ports:
             - name: nosql
               containerPort: {{ .Values.service.port }}

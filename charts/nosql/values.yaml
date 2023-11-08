@@ -15,11 +15,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 auth:
-  rootUsername: ""
-  rootPassword: ""
   username: ""
-  password: ""
   database: ""
+  secretName: ""
+  secretKey: ""
 
 persistence:
   accessModes:
