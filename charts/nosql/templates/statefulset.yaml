@@ -42,17 +42,17 @@ spec:
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.secretName . }}
-                  key: {{ .Values.auth.secretKey . }}
+                  name: {{ .Values.auth.secretName }}
+                  key: {{ .Values.auth.secretKey }}
             - name: MONGO_INITDB_USERNAME
-              value: {{ .Values.auth.username . }}
+              value: {{ .Values.auth.username }}
             - name: MONGO_INITDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.secretName . }}
-                  key: {{ .Values.auth.secretKey . }}
+                  name: {{ .Values.auth.secretName }}
+                  key: {{ .Values.auth.secretKey }}
             - name: MONGO_INITDB_DATABASE
-              value: {{ .Values.auth.database . }}
+              value: {{ .Values.auth.database }}
           ports:
             - name: nosql
               containerPort: {{ .Values.service.port }}

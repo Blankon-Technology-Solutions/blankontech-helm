@@ -3,22 +3,22 @@ entries:
   nosql:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-11-08T15:17:46.653767+07:00"
+    created: "2023-11-08T15:33:43.287321+07:00"
     description: A Helm chart for Kubernetes
     digest: 9c58677079188ce61bc0c41d310e1ef1e2ed3cf70b0bbd604f2798251b3b22ea
     name: nosql
     type: application
     urls:
-    - https://blankon-technology-solutions.github.io/blankontech-helm/nosql-0.2.0.tgz
+    - https://blankon-technology-solutions.github.io/blankontech-helm/packages/nosql-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-11-08T15:17:46.653383+07:00"
+    created: "2023-11-08T15:33:43.286888+07:00"
     description: A Helm chart for Kubernetes
     digest: c2d1e26b031820fe563918ced05b5ee98a2e7bb1a050a04010f88c920cc6b13c
     name: nosql
     type: application
     urls:
-    - https://blankon-technology-solutions.github.io/blankontech-helm/nosql-0.1.0.tgz
+    - https://blankon-technology-solutions.github.io/blankontech-helm/packages/nosql-0.1.0.tgz
     version: 0.1.0
-generated: "2023-11-08T15:17:46.652288+07:00"
+generated: "2023-11-08T15:33:43.285899+07:00"
